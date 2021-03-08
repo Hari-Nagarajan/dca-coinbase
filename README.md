@@ -1,58 +1,35 @@
 
-# Welcome to your CDK Python project!
+# Cost Averaging on Coinbase Pro
 
-This is a blank project for Python development with CDK.
+This is currently configured to buy $50 worth of ETH every day. 
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+DCA is a long-term strategy, where an investor regularly buys smaller amounts of an asset over a period of time, no matter the price (for example, investing $100 in Bitcoin every month for a year, instead of $1,200 at once). Their DCA schedule may change over time and — depending on their goals — it can last just a few months or many years. 
+See: https://www.coinbase.com/learn/tips-and-tutorials/dollar-cost-averaging
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
 
-To manually create a virtualenv on MacOS and Linux:
-
+# How to Deploy
+1. Make sure you have AWS Credentials
+2. ```cdk deploy```
+3. Navigate to the AWS Console (AWS Secrets Manager)
+4. Locate ```coinbaseProCredentials```
+5. Add a secret value: 
 ```
-$ python -m venv .venv
-```
-
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
-
-```
-$ source .venv/bin/activate
+{
+  "key": "key",
+  "passphrase": "passphrase",
+  "b64secret": "b64secret==",
+  "sandbox": "False"
+}
 ```
 
-If you are a Windows platform, you would activate the virtualenv like this:
+Set sandbox to "True" to use sandbox credentials. 
 
-```
-% .venv\Scripts\activate.bat
-```
+## TODO Add directions on how to get pro.coinbase API credentials
+## TODO Add the ability to easily set the amount and crypto token to purchase
 
-Once the virtualenv is activated, you can install the required dependencies.
-
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
-```
-
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
-
-## Useful commands
-
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
-
-Enjoy!
+# Workflow
+1. Check balances
+2. If balance is insufficient for the next order. Deposit Funds. This step is not instantaneous so the balance needs to be sufficient before this workflow is ran. 
+3. Place Order
+4. Deposit funds for the next order.
+######TODO Need to implement a wait between step 2 and 3, which would allow us to eliminate step 4. 
